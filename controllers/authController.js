@@ -3,10 +3,13 @@ const db = require('../config/database');
 
 // 1. Logika Login Admin
 exports.postLoginAdmin = (req, res) => {
-    const { Identifier, password } = req.body;
+    // Mengambil data dari properti 'email' yang dikirimkan oleh form
+    const { email, password } = req.body;
+    
+    // Tetap cocokkan dengan kolom 'Identifier' di database
     const query = 'SELECT * FROM users WHERE Identifier = ? AND password = ?';
     
-    db.query(query, [Identifier, password], (err, results) => {
+    db.query(query, [email, password], (err, results) => {
         if (err) {
             console.error('Database Error:', err);
             return res.status(500).render('login', { 
