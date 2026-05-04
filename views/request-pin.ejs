@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Permintaan Akses Survey SUKAFTI" />
+  <title>Permintaan PIN | SUKAFTI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* ============================================
+       REQUEST-PIN PAGE — Split Screen Style
+       ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Warna disesuaikan dengan tema gelap elegan (Navy/Slate) dari halaman Login */
+      --navy-dark:      #1e293b;
+      --navy-light:     #334155;
+      --navy-hover:     #0f172a;
+      --text-main:      #1e293b;
+      --text-muted:     #64748b;
+      --bg-form:        #ffffff;
+      --border-color:   #e2e8f0;
+      --input-bg:       #f8fafc;
+      --danger:         #ef4444;
+      --success:        #10b981;
+      --radius:         12px;
+      --trans:          all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-form);
+      color: var(--text-main);
+      overflow: hidden; /* Mencegah scroll di body, scroll hanya di area kanan */
+    }
+
+    /* ── Layout Utama (Split Screen) ── */
+    .split-layout {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ── PANEL KIRI (Ilustrasi & Brand) ── */
+    .panel-left {
+      flex: 1;
+      background-color: var(--navy-dark);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ornamen background kiri */
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      top: -10%; left: -10%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .brand-header {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .brand-logo {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 2px;
+      object-fit: cover;
+    }
+
+    .brand-text h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .brand-text p {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .illustration-wrapper {
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .illustration-wrapper img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      margin-bottom: 2rem;
+    }
+
+    .illustration-text h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .illustration-text p {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    /* ── PANEL KANAN (Form) ── */
+    .panel-right {
+      flex: 1;
+      background-color: var(--bg-form);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 2rem;
+      overflow-y: auto; /* Scroll hanya aktif di kanan */
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 440px;
+      margin: auto 0;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Styling Form ── */
+    .request-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .form-label .required { color: var(--danger); }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      width: 18px; height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background-color: var(--input-bg);
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--text-main);
+      transition: var(--trans);
+      outline: none;
+    }
+
+    .input-field:focus {
+      background-color: #ffffff;
+      border-color: var(--navy-light);
+      box-shadow: 0 0 0 4px rgba(51, 65, 85, 0.1);
+    }
+
+    select.input-field {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 14px;
+      width: 18px; height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background-color: var(--navy-light);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: var(--trans);
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--navy-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(15, 23, 42, 0.2);
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--trans);
+    }
+
+    .back-link:hover {
+      color: var(--navy-dark);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .split-layout { flex-direction: column; height: auto; min-height: 100vh; }
+      .panel-left { display: none; /* Sembunyikan ilustrasi di HP agar fokus ke form */ }
+      .panel-right { padding: 2rem 1.5rem; overflow-y: visible; }
+      body { overflow: auto; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-layout">
+    
+    <!-- ── PANEL KIRI (Gelap + Ilustrasi) ── -->
+    <div class="panel-left">
+      <a href="/login" class="brand-header">
+        <img src="/image/fti logo.jpg" alt="Logo FTI" class="brand-logo" onerror="this.src='https://via.placeholder.com/40'" />
+        <div class="brand-text">
+          <h2>SUKAFTI</h2>
+          <p>Fakultas Teknologi Informasi</p>
+        </div>
+      </a>
+
+      <div class="illustration-wrapper">
+        <!-- Ganti src di bawah ini kalau kamu punya file gambar ilustrasinya -->
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800" alt="Ilustrasi Kerjasama" style="opacity: 0.9; object-fit: cover; height: 260px;" />
+        <div class="illustration-text">
+          <h1>Pendaftaran Mitra Baru</h1>
+          <p>Sistem Informasi Survey Kerja Sama FTI Universitas Andalas mempermudah proses administrasi dan evaluasi kemitraan institusi secara digital.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL KANAN (Form Putih Bersih) ── -->
+    <div class="panel-right">
+      <div class="form-container">
+        
+        <div class="form-header">
+          <h2>Permintaan Akses Survey</h2>
+          <p>Lengkapi data perusahaan Anda. PIN akses akan dikirimkan ke email terdaftar setelah diverifikasi Admin.</p>
+        </div>
+
+        <form action="/request-pin" method="POST" class="request-form">
+          
+          <div class="form-group">
+            <label class="form-label">Nama Perusahaan <span class="required">*</span></label>
+            <div class="input-wrap">
+              <i data-lucide="building-2" class="input-icon"></i>
+              <input type="text" name="company_name" class="input-field" placeholder="PT / CV / Firma..." required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sektor / Bidang Industri <span class="required">*</span></label>
+            <div class="input-wrap">
+              <i data-lucide="layers" class="input-icon"></i>
+              <select name="industry_sector" class="input-field" required>
+                <option value="" disabled selected>Pilih sektor industri...</option>
+                <option value="teknologi">Teknologi Informasi & Software</option>
+                <option value="telekomunikasi">Telekomunikasi</option>
+                <option value="manufaktur">Manufaktur & Industri</option>
+                <option value="keuangan">Keuangan & Perbankan</option>
+                <option value="lainnya">Lainnya</option>
+              </select>
+              <i data-lucide="chevron-down" class="select-arrow"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Perusahaan <span class="required">*</span></label>
+            <div class="input-wrap">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input type="email" name="company_email" class="input-field" placeholder="hrd@perusahaan.com" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nama PIC <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i data-lucide="user" class="input-icon"></i>
+                <input type="text" name="pic_name" class="input-field" placeholder="Budi Santoso" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">No. WhatsApp <span class="required">*</span></label>
+              <div class="input-wrap">
+                <i data-lucide="smartphone" class="input-icon"></i>
+                <input type="tel" name="whatsapp_number" class="input-field" placeholder="08xxxxxxxxxx" required>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <i data-lucide="send"></i> Kirim Permintaan PIN
+          </button>
+        </form>
+
+        <a href="/login" class="back-link">
+          <i data-lucide="arrow-left"></i> Kembali ke Halaman Login
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

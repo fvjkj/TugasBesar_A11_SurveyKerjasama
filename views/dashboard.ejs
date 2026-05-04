@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dashboard Admin SUKAFTI — Sistem Informasi Survey Kerja Sama FTI Universitas Andalas." />
+  <title>Dashboard Admin | SUKAFTI</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Basecoat UI -->
+  <link rel="stylesheet" href="https://unpkg.com/basecoat-css@latest/dist/basecoat.min.css" />
+  <!-- Dashboard CSS -->
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ══════════════════════════════════
+       SIDEBAR
+       ══════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="/image/fti logo.jpg" alt="Logo FTI" class="sidebar__logo" onerror="this.style.display='none'" />
+      <div>
+        <div class="sidebar__wordmark">SUKAFTI</div>
+        <div class="sidebar__tagline">Survey Kerjasama FTI</div>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Menu Utama</div>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="/" class="active" id="nav-dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</a></li>
+      <li class="nav-item"><a href="/mitra" id="nav-mitra"><i data-lucide="building-2"></i>Manajemen Mitra</a></li>
+      <li class="nav-item"><a href="/pin" id="nav-pin"><i data-lucide="key-round"></i>Kelola PIN Survey</a></li>
+      <li class="nav-item"><a href="/hasil" id="nav-hasil"><i data-lucide="bar-chart-3"></i>Hasil Survey</a></li>
+    </ul>
+
+    <div class="nav-section-label" style="margin-top:.75rem;">Pengaturan</div>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="/profile" id="nav-profile"><i data-lucide="user-cog"></i>Profil Admin</a></li>
+    </ul>
+
+    <div class="sidebar__footer">
+      <a href="/login" id="btn-logout"><i data-lucide="log-out"></i>Keluar</a>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════
+       MAIN WRAPPER
+       ══════════════════════════════════ -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <h2>Dashboard Overview</h2>
+        <p>Senin, 4 Mei 2026 — Selamat datang kembali 👋</p>
+      </div>
+      <div class="topbar__search">
+        <i data-lucide="search"></i>
+        <input type="text" id="topbar-search" placeholder="Cari mitra, PIN, survey…" autocomplete="off" />
+      </div>
+      <div class="topbar__right">
+        <button class="icon-btn" id="btn-notif" aria-label="Notifikasi">
+          <i data-lucide="bell"></i>
+          <span class="notif-badge"></span>
+        </button>
+        <div class="admin-chip" id="admin-chip" role="button" tabindex="0">
+          <div class="admin-avatar">AF</div>
+          <span class="admin-chip__name">Admin FTI</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="content-area" id="main-content">
+
+      <!-- ① HERO BANNER -->
+      <div class="hero-banner">
+        <div class="hero-deco"></div>
+        <div class="hero-banner__text">
+          <h1>Selamat Datang, Admin FTI! 🚀</h1>
+          <p>Pantau aktivitas survey, kelola data mitra, dan generate PIN kerjasama industri dari satu tempat.</p>
+        </div>
+        <div class="hero-banner__badge">
+          <div class="big-num">42</div>
+          <div class="big-label">Total Aktivitas<br>Bulan Ini</div>
+        </div>
+      </div>
+
+      <!-- ② STAT CARDS -->
+      <div class="stats-grid">
+
+        <!-- Card 1: Total Mitra + progress bar -->
+        <div class="stat-card stat-card--a">
+          <div class="stat__icon icon-slate"><i data-lucide="building-2"></i></div>
+          <div style="flex:1;">
+            <div class="stat__label">Total Mitra</div>
+            <div class="stat__value">24</div>
+            <div class="stat__trend stat__trend--up">
+              <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
+              +3 bulan ini
+            </div>
+            <div class="stat__bar-wrap">
+              <div class="stat__bar-label"><span>Target Tahunan</span><span>24 / 30</span></div>
+              <div class="stat__bar-track">
+                <div class="stat__bar-fill" style="width:80%; background:linear-gradient(90deg,#1e293b,#64748b);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: PIN Aktif + progress bar -->
+        <div class="stat-card stat-card--a">
+          <div class="stat__icon icon-amber"><i data-lucide="key-round"></i></div>
+          <div style="flex:1;">
+            <div class="stat__label">PIN Aktif</div>
+            <div class="stat__value">12</div>
+            <div class="stat__sub">Belum digunakan mitra</div>
+            <div class="stat__bar-wrap">
+              <div class="stat__bar-label"><span>Dari total PIN</span><span>12 / 18</span></div>
+              <div class="stat__bar-track">
+                <div class="stat__bar-fill" style="width:67%; background:linear-gradient(90deg,#f59e0b,#fcd34d);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Survey Selesai + sparkline -->
+        <div class="stat-card stat-card--spark">
+          <div style="display:flex;align-items:flex-start;gap:1rem;">
+            <div class="stat__icon icon-emerald"><i data-lucide="check-circle-2"></i></div>
+            <div>
+              <div class="stat__label">Survey Selesai</div>
+              <div class="stat__value">18</div>
+              <div class="stat__trend stat__trend--up">
+                <i data-lucide="arrow-up-right" style="width:12px;height:12px;"></i>
+                75% completion rate
+              </div>
+            </div>
+          </div>
+          <div class="stat__sparkline">
+            <svg viewBox="0 0 180 48" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="spkGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#10b981" stop-opacity=".25"/>
+                  <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,40 L20,35 L40,30 L60,32 L80,20 L100,15 L120,18 L140,10 L160,8 L180,4"
+                    fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M0,40 L20,35 L40,30 L60,32 L80,20 L100,15 L120,18 L140,10 L160,8 L180,4 L180,48 L0,48 Z"
+                    fill="url(#spkGrad)"/>
+            </svg>
+          </div>
+        </div>
+
+      </div><!-- /.stats-grid -->
+
+      <!-- ③ CHARTS ROW -->
+      <div class="charts-grid">
+
+        <!-- Bar Chart: Tren Survey per Bulan -->
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3>Tren Survey per Bulan</h3>
+            <p>Jumlah survey yang diselesaikan mitra — 6 bulan terakhir</p>
+          </div>
+          <div class="chart-wrap chart-wrap--bar">
+            <canvas id="chartSurveyBar"></canvas>
+          </div>
+        </div>
+
+        <!-- Donut Chart: Status PIN -->
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3>Distribusi Status PIN</h3>
+            <p>Proporsi PIN aktif, terpakai, dan kadaluarsa</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="chart-wrap chart-wrap--donut" style="width:200px;">
+              <canvas id="chartPinDonut"></canvas>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:#334155;"></span>Aktif (12)</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#94a3b8;"></span>Terpakai (6)</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#e2e8f0;"></span>Kadaluarsa (2)</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.charts-grid -->
+
+      <!-- ④ DATA TABLE -->
+      <div class="table-card">
+        <div class="table-card__header">
+          <div>
+            <h2>Daftar PIN Survey &amp; Mitra</h2>
+            <p>Menampilkan 5 data terbaru — <a href="/pin">Lihat semua →</a></p>
+          </div>
+          <button class="btn-generate" id="btn-generate-pin" type="button">
+            <i data-lucide="plus-circle"></i>
+            Generate PIN Baru
+          </button>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Perusahaan Mitra</th>
+                <th>Kode PIN</th>
+                <th>Status</th>
+                <th>Dibuat Pada</th>
+                <th>Digunakan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="company-cell">
+                    <div class="company-avatar" style="background:#f1f5f9;color:#1e293b;">PM</div>
+                    <div><div class="company-name">PT Mencari Cinta</div><div class="company-id">#MITRA-001</div></div>
+                  </div>
+                </td>
+                <td><span class="pin-code">ABC123</span></td>
+                <td><span class="pill pill--active">Aktif</span></td>
+                <td>04 Mei 2026</td>
+                <td style="color:#94a3b8;">—</td>
+                <td><div class="action-group">
+                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
+                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="company-cell">
+                    <div class="company-avatar" style="background:#fefce8;color:#d97706;">CM</div>
+                    <div><div class="company-name">CV Maju Mundur</div><div class="company-id">#MITRA-002</div></div>
+                  </div>
+                </td>
+                <td><span class="pin-code">XYZ789</span></td>
+                <td><span class="pill pill--active">Aktif</span></td>
+                <td>04 Mei 2026</td>
+                <td style="color:#94a3b8;">—</td>
+                <td><div class="action-group">
+                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
+                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="company-cell">
+                    <div class="company-avatar" style="background:#ecfdf5;color:#059669;">TC</div>
+                    <div><div class="company-name">Tech Corp Indonesia</div><div class="company-id">#MITRA-003</div></div>
+                  </div>
+                </td>
+                <td><span class="pin-code pin-code--used">SUDAH1</span></td>
+                <td><span class="pill pill--used">Terpakai</span></td>
+                <td>03 Mei 2026</td>
+                <td>03 Mei 2026</td>
+                <td><div class="action-group">
+                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
+                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="company-cell">
+                    <div class="company-avatar" style="background:#fef9c3;color:#92400e;">GN</div>
+                    <div><div class="company-name">PT Garuda Nusantara</div><div class="company-id">#MITRA-004</div></div>
+                  </div>
+                </td>
+                <td><span class="pin-code">GRD042</span></td>
+                <td><span class="pill pill--pending">Menunggu</span></td>
+                <td>02 Mei 2026</td>
+                <td style="color:#94a3b8;">—</td>
+                <td><div class="action-group">
+                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
+                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="company-cell">
+                    <div class="company-avatar" style="background:#f0fdf4;color:#16a34a;">SI</div>
+                    <div><div class="company-name">Startup Inovasi Digital</div><div class="company-id">#MITRA-005</div></div>
+                  </div>
+                </td>
+                <td><span class="pin-code pin-code--used">SID991</span></td>
+                <td><span class="pill pill--used">Terpakai</span></td>
+                <td>01 Mei 2026</td>
+                <td>02 Mei 2026</td>
+                <td><div class="action-group">
+                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
+                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /.table-card -->
+
+    </main><!-- /.content-area -->
+  </div><!-- /.main-wrapper -->
+</div><!-- /.app-shell -->
+
+<script>
+  // ── Lucide Icons ───────────────────────────────────────
+  lucide.createIcons();
+
+  // ── Animate progress bars ──────────────────────────────
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.stat__bar-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => { bar.style.width = w; }, 300);
+    });
+  });
+
+  // ── Chart.js global defaults ───────────────────────────
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.color = '#64748b';
+
+  // ── Bar Chart: Tren Survey per Bulan ──────────────────
+  const ctxBar = document.getElementById('chartSurveyBar').getContext('2d');
+  new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+      labels: ['Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
+      datasets: [{
+        label: 'Survey Selesai',
+        data: [3, 5, 4, 7, 6, 8],
+        backgroundColor: 'rgba(30, 41, 59, 0.80)',
+        borderRadius: 6,
+        borderSkipped: false,
+      }, {
+        label: 'PIN Digenerate',
+        data: [4, 6, 5, 9, 8, 10],
+        backgroundColor: 'rgba(148, 163, 184, 0.40)',
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 12 } } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 12 } } },
+        y: { grid: { color: '#f1f5f9' }, ticks: { stepSize: 2, font: { size: 12 } }, beginAtZero: true }
+      }
+    }
+  });
+
+  // ── Donut Chart: Status PIN ────────────────────────────
+  const ctxDonut = document.getElementById('chartPinDonut').getContext('2d');
+  new Chart(ctxDonut, {
+    type: 'doughnut',
+    data: {
+      labels: ['Aktif', 'Terpakai', 'Kadaluarsa'],
+      datasets: [{
+        data: [12, 6, 2],
+        backgroundColor: ['#334155', '#94a3b8', '#e2e8f0'],
+        borderWidth: 0,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '72%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.parsed} PIN`
+          }
+        }
+      }
+    }
+  });
+
+  // ── Generate PIN placeholder ───────────────────────────
+  document.getElementById('btn-generate-pin').addEventListener('click', () => {
+    alert('Fitur Generate PIN akan diimplementasikan di modul PIN! 🔑');
+  });
+</script>
+</body>
+</html>

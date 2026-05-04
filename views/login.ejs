@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +21,7 @@
   <!-- Custom Login Styles (override & extension di atas Basecoat) -->
   <link rel="stylesheet" href="/css/login.css" />
 </head>
+
 <body>
 
   <div class="split-layout">
@@ -47,7 +49,7 @@
             <img src="/image/survey_illustration.png" alt="Ilustrasi Survey" class="illus-img" />
           </div>
           <div class="panel-left__copy">
-            <h2 class="panel-left__tagline">Kelola Survey Kerja Sama<br/>Mitra Industri FTI</h2>
+            <h2 class="panel-left__tagline">Kelola Survey Kerja Sama<br />Mitra Industri FTI</h2>
             <p class="panel-left__desc">
               Platform digital untuk mengelola data kerjasama dan survei mitra industri
               Fakultas Teknologi Informasi, Universitas Andalas.
@@ -61,7 +63,7 @@
             <img src="/image/survey_slide2.png" alt="Ilustrasi Analitik Data" class="illus-img" />
           </div>
           <div class="panel-left__copy">
-            <h2 class="panel-left__tagline">Analitik Data<br/>Berbasis Digital</h2>
+            <h2 class="panel-left__tagline">Analitik Data<br />Berbasis Digital</h2>
             <p class="panel-left__desc">
               Visualisasi hasil survey secara real-time dengan laporan
               yang mudah dibaca dan diunduh.
@@ -75,7 +77,7 @@
             <img src="/image/survey_slide3.png" alt="Ilustrasi Kerjasama" class="illus-img" />
           </div>
           <div class="panel-left__copy">
-            <h2 class="panel-left__tagline">Jalin Kerja Sama<br/>yang Berkelanjutan</h2>
+            <h2 class="panel-left__tagline">Jalin Kerja Sama<br />yang Berkelanjutan</h2>
             <p class="panel-left__desc">
               Pantau perkembangan kemitraan dan rekam seluruh riwayat
               kerja sama FTI Universitas Andalas.
@@ -87,7 +89,8 @@
 
       <!-- Dot indicators (klikable) -->
       <div class="panel-left__dots" role="tablist" aria-label="Slide">
-        <button class="dot dot--active" data-slide="0" onclick="goToSlide(0)" aria-label="Slide 1" aria-selected="true"></button>
+        <button class="dot dot--active" data-slide="0" onclick="goToSlide(0)" aria-label="Slide 1"
+          aria-selected="true"></button>
         <button class="dot" data-slide="1" onclick="goToSlide(1)" aria-label="Slide 2" aria-selected="false"></button>
         <button class="dot" data-slide="2" onclick="goToSlide(2)" aria-label="Slide 3" aria-selected="false"></button>
       </div>
@@ -111,27 +114,15 @@
 
         <!-- ── Tab Switcher ─────────────────── -->
         <div class="tabs" role="tablist">
-          <button
-            class="tab-btn <%= activeTab === 'admin' ? 'tab-btn--active' : '' %>"
-            id="tab-admin"
-            role="tab"
-            aria-selected="<%= activeTab === 'admin' ? 'true' : 'false' %>"
-            aria-controls="panel-admin"
-            type="button"
-            onclick="switchTab('admin')"
-          >
+          <button class="tab-btn <%= activeTab === 'admin' ? 'tab-btn--active' : '' %>" id="tab-admin" role="tab"
+            aria-selected="<%= activeTab === 'admin' ? 'true' : 'false' %>" aria-controls="panel-admin" type="button"
+            onclick="switchTab('admin')">
             <i data-lucide="shield-check" class="tab-icon"></i>
             Admin
           </button>
-          <button
-            class="tab-btn <%= activeTab === 'mitra' ? 'tab-btn--active' : '' %>"
-            id="tab-mitra"
-            role="tab"
-            aria-selected="<%= activeTab === 'mitra' ? 'true' : 'false' %>"
-            aria-controls="panel-mitra"
-            type="button"
-            onclick="switchTab('mitra')"
-          >
+          <button class="tab-btn <%= activeTab === 'mitra' ? 'tab-btn--active' : '' %>" id="tab-mitra" role="tab"
+            aria-selected="<%= activeTab === 'mitra' ? 'true' : 'false' %>" aria-controls="panel-mitra" type="button"
+            onclick="switchTab('mitra')">
             <i data-lucide="building-2" class="tab-icon"></i>
             Mitra
           </button>
@@ -140,120 +131,94 @@
         </div>
 
         <!-- ── PANEL ADMIN ──────────────────── -->
-        <section id="panel-admin" class="tab-panel" role="tabpanel" aria-labelledby="tab-admin" <%= activeTab === 'mitra' ? 'hidden' : '' %>>
+        <section id="panel-admin" class="tab-panel" role="tabpanel" aria-labelledby="tab-admin" <%=activeTab==='mitra'
+          ? 'hidden' : '' %>>
 
-          <% if (locals.error && error && activeTab === 'admin') { %>
-          <div class="alert-error" role="alert">
-            <i data-lucide="alert-circle" class="alert-icon"></i>
-            <span><%= error %></span>
-          </div>
-          <% } %>
-
-          <form action="/api/auth/login" method="POST" class="login-form" novalidate>
-
-            <!-- Email -->
-            <div class="field">
-              <label for="admin-email" class="field__label">Email</label>
-              <div class="field__wrap">
-                <i data-lucide="mail" class="field__icon"></i>
-                <input
-                  type="email"
-                  id="admin-email"
-                  name="email"
-                  class="field__input"
-                  placeholder="admin@fti.unand.ac.id"
-                  autocomplete="email"
-                  required
-                />
-              </div>
+          <% if (locals.error && error && activeTab==='admin' ) { %>
+            <div class="alert-error" role="alert">
+              <i data-lucide="alert-circle" class="alert-icon"></i>
+              <span>
+                <%= error %>
+              </span>
             </div>
+            <% } %>
 
-            <!-- Password -->
-            <div class="field">
-              <label for="admin-password" class="field__label">Password</label>
-              <div class="field__wrap">
-                <i data-lucide="lock" class="field__icon"></i>
-                <input
-                  type="password"
-                  id="admin-password"
-                  name="password"
-                  class="field__input"
-                  placeholder="Masukkan password"
-                  autocomplete="current-password"
-                  required
-                />
-                <button type="button" class="field__eye" onclick="togglePw('admin-password', this)" aria-label="Tampilkan password">
-                  <i data-lucide="eye"></i>
+              <form action="/login" method="POST" class="login-form" novalidate>
+                <!-- Email -->
+                <div class="field">
+                  <label for="admin-email" class="field__label">Email</label>
+                  <div class="field__wrap">
+                    <i data-lucide="mail" class="field__icon"></i>
+                    <input type="email" id="admin-email" name="email" class="field__input"
+                      placeholder="admin@fti.unand.ac.id" autocomplete="email" required />
+                  </div>
+                </div>
+
+                <!-- Password -->
+                <div class="field">
+                  <label for="admin-password" class="field__label">Password</label>
+                  <div class="field__wrap">
+                    <i data-lucide="lock" class="field__icon"></i>
+                    <input type="password" id="admin-password" name="password" class="field__input"
+                      placeholder="Masukkan password" autocomplete="current-password" required />
+                    <button type="button" class="field__eye" onclick="togglePw('admin-password', this)"
+                      aria-label="Tampilkan password">
+                      <i data-lucide="eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" id="btn-admin-login" class="btn btn--primary">
+                  <i data-lucide="log-in" class="btn__icon"></i>
+                  Masuk sebagai Admin
                 </button>
-              </div>
-            </div>
+              </form>
 
-            <button type="submit" id="btn-admin-login" class="btn btn--primary">
-              <i data-lucide="log-in" class="btn__icon"></i>
-              Masuk sebagai Admin
-            </button>
-          </form>
-
-          <div class="divider"><span>atau</span></div>
-
-          <div class="alt-action">
-            <span class="alt-action__text">Belum punya akun?</span>
-            <a href="/register" id="link-register" class="btn btn--ghost">
-              <i data-lucide="user-plus" class="btn__icon"></i>
-              Buat Akun Admin
-            </a>
-          </div>
         </section>
 
         <!-- ── PANEL MITRA ──────────────────── -->
-        <section id="panel-mitra" class="tab-panel" role="tabpanel" aria-labelledby="tab-mitra" <%= activeTab === 'admin' ? 'hidden' : '' %>>
+        <section id="panel-mitra" class="tab-panel" role="tabpanel" aria-labelledby="tab-mitra" <%=activeTab==='admin'
+          ? 'hidden' : '' %>>
 
-          <% if (locals.error && error && activeTab === 'mitra') { %>
-          <div class="alert-error" role="alert">
-            <i data-lucide="alert-circle" class="alert-icon"></i>
-            <span><%= error %></span>
-          </div>
-          <% } %>
-
-          <p class="mitra-desc">
-            Masukkan PIN 6-karakter yang telah diberikan oleh admin untuk mengakses survey.
-          </p>
-
-          <form action="/api/auth/mitra-login" method="POST" class="login-form" novalidate>
-            <div class="field">
-              <label for="mitra-pin" class="field__label field__label--center">Kode PIN</label>
-              <div class="field__wrap field__wrap--pin">
-                <i data-lucide="key-round" class="field__icon"></i>
-                <input
-                  type="text"
-                  id="mitra-pin"
-                  name="pin"
-                  class="field__input field__input--pin"
-                  placeholder="• • • • • •"
-                  maxlength="6"
-                  inputmode="text"
-                  autocomplete="one-time-code"
-                  required
-                />
-              </div>
-              <p class="field__hint">PIN dikirimkan oleh administrator SUKAFTI.</p>
+          <% if (locals.error && error && activeTab==='mitra' ) { %>
+            <div class="alert-error" role="alert">
+              <i data-lucide="alert-circle" class="alert-icon"></i>
+              <span>
+                <%= error %>
+              </span>
             </div>
+            <% } %>
 
-            <button type="submit" id="btn-mitra-login" class="btn btn--secondary">
-              <i data-lucide="arrow-right-circle" class="btn__icon"></i>
-              Masuk dengan PIN
-            </button>
-          </form>
+              <p class="mitra-desc">
+                Masukkan PIN 6-karakter yang telah diberikan oleh admin untuk mengakses survey.
+              </p>
 
-          <div class="divider"><span>atau</span></div>
+              <form action="/api/auth/mitra-login" method="POST" class="login-form" novalidate>
+                <div class="field">
+                  <label for="mitra-pin" class="field__label field__label--center">Kode PIN</label>
+                  <div class="field__wrap field__wrap--pin">
+                    <i data-lucide="key-round" class="field__icon"></i>
+                    <input type="text" id="mitra-pin" name="pin" class="field__input field__input--pin"
+                      placeholder="• • • • • •" maxlength="6" inputmode="text" autocomplete="one-time-code" required />
+                  </div>
+                  <p class="field__hint">PIN dikirimkan oleh administrator SUKAFTI.</p>
+                </div>
 
-          <div class="alt-action">
-            <span class="alt-action__text">Belum punya PIN?</span>
-            <a href="mailto:admin@fti.unand.ac.id" id="link-minta-pin" class="btn btn--ghost-muted">
-              <i data-lucide="send" class="btn__icon"></i>
-              Minta PIN ke Admin
-            </a>
-          </div>
+                <button type="submit" id="btn-mitra-login" class="btn btn--secondary">
+                  <i data-lucide="arrow-right-circle" class="btn__icon"></i>
+                  Masuk dengan PIN
+                </button>
+              </form>
+
+              <div class="divider"><span>atau</span></div>
+
+              <div class="alt-action">
+                <span class="alt-action__text">Belum punya PIN?</span>
+                <a href="/request-pin" id="link-minta-pin" class="btn btn--ghost-muted">
+                  <i data-lucide="send" class="btn__icon"></i>
+                  Minta PIN ke Admin
+                </a>
+              </div>
         </section>
 
         <!-- Footer kecil -->
@@ -275,11 +240,11 @@
 
     function positionIndicator(tabEl) {
       indicator.style.width = tabEl.offsetWidth + 'px';
-      indicator.style.left  = tabEl.offsetLeft  + 'px';
+      indicator.style.left = tabEl.offsetLeft + 'px';
     }
 
     function switchTab(name) {
-      const tabs   = document.querySelectorAll('.tab-btn');
+      const tabs = document.querySelectorAll('.tab-btn');
       const panels = document.querySelectorAll('.tab-panel');
       tabs.forEach(t => {
         const active = t.id === 'tab-' + name;
@@ -295,7 +260,7 @@
     }
 
     window.addEventListener('load', () => {
-      const params   = new URLSearchParams(window.location.search);
+      const params = new URLSearchParams(window.location.search);
       const tabParam = params.get('tab');
       if (tabParam === 'mitra') { switchTab('mitra'); }
       else { const a = document.querySelector('.tab-btn--active'); if (a) positionIndicator(a); }
@@ -325,12 +290,12 @@
     //  CAROUSEL
     // ════════════════════════════════════════════
     let currentSlide = 0;
-    let autoTimer    = null;
-    const TOTAL      = 3;
-    const AUTO_MS    = 4000;
+    let autoTimer = null;
+    const TOTAL = 3;
+    const AUTO_MS = 4000;
 
-    const slides     = document.querySelectorAll('.carousel__slide');
-    const dots       = document.querySelectorAll('.panel-left__dots .dot');
+    const slides = document.querySelectorAll('.carousel__slide');
+    const dots = document.querySelectorAll('.panel-left__dots .dot');
 
     function showSlide(idx) {
       // bounds
@@ -338,8 +303,8 @@
 
       // slides
       slides.forEach((s, i) => {
-        s.classList.toggle('carousel__slide--active',   i === idx);
-        s.classList.toggle('carousel__slide--prev',     i === currentSlide && i !== idx);
+        s.classList.toggle('carousel__slide--active', i === idx);
+        s.classList.toggle('carousel__slide--prev', i === currentSlide && i !== idx);
       });
 
       // dots
@@ -375,15 +340,16 @@
     resetTimer();
 
     // Swipe / drag support on left panel
-    (function() {
+    (function () {
       const panel = document.querySelector('.panel-left');
       let startX = 0;
       panel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-      panel.addEventListener('touchend',   e => {
+      panel.addEventListener('touchend', e => {
         const dx = e.changedTouches[0].clientX - startX;
         if (Math.abs(dx) > 40) { goToSlide(currentSlide + (dx < 0 ? 1 : -1)); }
       }, { passive: true });
     })();
   </script>
 </body>
+
 </html>
