@@ -6,30 +6,22 @@
   <meta name="description" content="Login ke SUKAFTI — Sistem Informasi Survey Kerja Sama FTI Universitas Andalas." />
   <title>Login | SUKAFTI</title>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-  <!-- Basecoat UI (base design system — wajib sesuai spesifikasi proyek) -->
   <link rel="stylesheet" href="https://unpkg.com/basecoat-css@latest/dist/basecoat.min.css" />
 
-  <!-- Custom Login Styles (override & extension di atas Basecoat) -->
   <link rel="stylesheet" href="/css/login.css" />
 </head>
 <body>
 
   <div class="split-layout">
 
-    <!-- ═══════════════════════════════════════
-         KIRI — Panel Ilustrasi & Branding
-         ═══════════════════════════════════════ -->
     <aside class="panel-left" aria-hidden="true">
 
-      <!-- Logo di sudut kiri atas -->
       <div class="panel-left__logo">
         <img src="/image/fti logo.jpg" alt="Logo FTI Unand" class="logo-img" />
         <div class="logo-text">
@@ -38,16 +30,14 @@
         </div>
       </div>
 
-      <!-- ── CAROUSEL ─────────────────────────────────── -->
       <div class="carousel" id="left-carousel" aria-label="Fitur SUKAFTI">
 
-        <!-- Slide 1 -->
         <div class="carousel__slide carousel__slide--active" data-index="0">
           <div class="panel-left__illus">
             <img src="/image/survey_illustration.png" alt="Ilustrasi Survey" class="illus-img" />
           </div>
           <div class="panel-left__copy">
-            <h2 class="panel-left__tagline">Kelola Survey Kerja Sama<br/>Mitra Industri FTI</h2>
+            <h2 class="panel-left__tagline">Kelola Survey Kerja Sama Kerja<br/>Mitra Industri FTI</h2>
             <p class="panel-left__desc">
               Platform digital untuk mengelola data kerjasama dan survei mitra industri
               Fakultas Teknologi Informasi, Universitas Andalas.
@@ -55,7 +45,6 @@
           </div>
         </div>
 
-        <!-- Slide 2 -->
         <div class="carousel__slide" data-index="1">
           <div class="panel-left__illus">
             <img src="/image/survey_slide2.png" alt="Ilustrasi Analitik Data" class="illus-img" />
@@ -69,7 +58,6 @@
           </div>
         </div>
 
-        <!-- Slide 3 -->
         <div class="carousel__slide" data-index="2">
           <div class="panel-left__illus">
             <img src="/image/survey_slide3.png" alt="Ilustrasi Kerjasama" class="illus-img" />
@@ -83,33 +71,24 @@
           </div>
         </div>
 
-      </div><!-- /.carousel -->
-
-      <!-- Dot indicators (klikable) -->
-      <div class="panel-left__dots" role="tablist" aria-label="Slide">
+      </div><div class="panel-left__dots" role="tablist" aria-label="Slide">
         <button class="dot dot--active" data-slide="0" onclick="goToSlide(0)" aria-label="Slide 1" aria-selected="true"></button>
         <button class="dot" data-slide="1" onclick="goToSlide(1)" aria-label="Slide 2" aria-selected="false"></button>
         <button class="dot" data-slide="2" onclick="goToSlide(2)" aria-label="Slide 3" aria-selected="false"></button>
       </div>
 
-      <!-- Dekorasi geometri -->
       <div class="deco deco--tl" aria-hidden="true"></div>
       <div class="deco deco--br" aria-hidden="true"></div>
     </aside>
 
-    <!-- ═══════════════════════════════════════
-         KANAN — Panel Form Login
-         ═══════════════════════════════════════ -->
     <main class="panel-right" role="main">
       <div class="form-container">
 
-        <!-- Heading -->
         <div class="form-header">
           <h1 class="form-title">Masuk ke Sistem</h1>
           <p class="form-subtitle">Pilih mode akses sesuai peran Anda</p>
         </div>
 
-        <!-- ── Tab Switcher ─────────────────── -->
         <div class="tabs" role="tablist">
           <button
             class="tab-btn <%= activeTab === 'admin' ? 'tab-btn--active' : '' %>"
@@ -135,11 +114,9 @@
             <i data-lucide="building-2" class="tab-icon"></i>
             Mitra
           </button>
-          <!-- Sliding indicator -->
           <span class="tab-indicator" id="tab-indicator"></span>
         </div>
 
-        <!-- ── PANEL ADMIN ──────────────────── -->
         <section id="panel-admin" class="tab-panel" role="tabpanel" aria-labelledby="tab-admin" <%= activeTab === 'mitra' ? 'hidden' : '' %>>
 
           <% if (locals.error && error && activeTab === 'admin') { %>
@@ -149,9 +126,8 @@
           </div>
           <% } %>
 
-          <form action="/api/auth/login" method="POST" class="login-form" novalidate>
+          <form action="/login" method="POST" class="login-form" novalidate>
 
-            <!-- Email -->
             <div class="field">
               <label for="admin-email" class="field__label">Email</label>
               <div class="field__wrap">
@@ -168,7 +144,6 @@
               </div>
             </div>
 
-            <!-- Password -->
             <div class="field">
               <label for="admin-password" class="field__label">Password</label>
               <div class="field__wrap">
@@ -205,7 +180,6 @@
           </div>
         </section>
 
-        <!-- ── PANEL MITRA ──────────────────── -->
         <section id="panel-mitra" class="tab-panel" role="tabpanel" aria-labelledby="tab-mitra" <%= activeTab === 'admin' ? 'hidden' : '' %>>
 
           <% if (locals.error && error && activeTab === 'mitra') { %>
@@ -256,17 +230,13 @@
           </div>
         </section>
 
-        <!-- Footer kecil -->
         <p class="form-footer">
           &copy; <%= new Date().getFullYear() %> SUKAFTI &mdash; FTI Universitas Andalas
         </p>
 
-      </div><!-- /.form-container -->
-    </main>
+      </div></main>
 
-  </div><!-- /.split-layout -->
-
-  <script>
+  </div><script>
     // ── Init Lucide ──────────────────────────────
     lucide.createIcons();
 
