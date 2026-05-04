@@ -14,9 +14,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Rute Halaman Utama 
+// Redirect root ke halaman login
 app.get('/', (req, res) => {
-    res.render('index'); 
+    res.redirect('/login');
+});
+
+// Rute Halaman Login (Admin & Mitra tab)
+app.get('/login', (req, res) => {
+    res.render('login', { activeTab: 'admin' });
+});
+
+// Rute Halaman Input PIN Mitra
+app.get('/input-pin', (req, res) => {
+    res.render('input-pin');
 });
 
 // Rute Halaman Login 
