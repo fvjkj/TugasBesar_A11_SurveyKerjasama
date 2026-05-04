@@ -1,41 +1,44 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-
-// 1. IMPORT CONTROLLER BACKEND (Buatan Madani)
 const authController = require('./controllers/authController');
 
-// 2. SETUP VIEW ENGINE & FOLDER PUBLIC
+// 1. SETUP VIEW ENGINE & FOLDER PUBLIC
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 3. SETUP BACA DATA FORM (Sangat penting agar req.body tidak error)
+// 2. SETUP BACA DATA FORM (Sangat penting agar req.body tidak error)
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // Tambahan jaga-jaga kalau ada kiriman data format JSON
+app.use(express.json());
 
 // ==========================================
 // ROUTING TAMPILAN HALAMAN (GET)
 // ==========================================
 
-// Halaman Dashboard Utama (Akan dirender setelah Admin sukses login)
+// Halaman Dashboard Utama (Admin)
 app.get('/', (req, res) => {
     res.render('dashboard'); 
 });
 
-// Rute Halaman Login (Tampilan awal selalu buka tab Admin)
+// Rute Halaman Login
 app.get('/login', (req, res) => {
     res.render('login', { activeTab: 'admin', error: null }); 
 });
 
-// Rute Halaman Input PIN Mitra (Kalau halaman terpisah masih dipakai)
+// Rute untuk Input PIN Mitra (Tab Mitra di halaman Login)
 app.get('/input-pin', (req, res) => {
-    res.render('input-pin');
+    res.render('login', { activeTab: 'mitra', error: null }); 
 });
 
-// Rute Halaman Permintaan PIN Mitra
+// Rute Halaman Permintaan PIN Mitra (Fitur Baru Ferdi)
 app.get('/request-pin', (req, res) => {
     res.render('request-pin', { error: null, success: null });
+});
+
+// Halaman Setelah Login Mitra (Punya Madani)
+app.get('/survey-kerjasama', (req, res) => {
+    res.send('<h1>Selamat Datang di Halaman Survey Kerjasama</h1><p>Halaman ini nantinya akan dikerjakan oleh anggota tim yang lain.</p>');
 });
 
 // ==========================================
@@ -47,7 +50,6 @@ app.post('/login', authController.postLoginAdmin);
 
 // Memproses form saat Mitra klik "Masuk" dengan PIN
 app.post('/api/auth/mitra-login', authController.postLoginMitra);
-
 
 // ==========================================
 // JALANKAN SERVER
