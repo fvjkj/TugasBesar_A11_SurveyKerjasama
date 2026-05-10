@@ -29,36 +29,61 @@ exports.postLoginAdmin = (req, res) => {
     });
 };
 
-// 2. Logika Validasi PIN Mitra
+// 2. Logika Validasi Login Mitra (PIN Perusahaan)
 exports.postLoginMitra = (req, res) => {
-    const { pin } = req.body;
-    const query = 'SELECT * FROM pin_survey WHERE pin_code = ?';
-    
-    db.query(query, [pin], (err, results) => {
+    const { nama, jabatan, perusahaan_id, pin } = req.body;
+
+    // Validasi input dasar
+    if (!nama || !jabatan || !perusahaan_id || !pin) {
+        return db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err2, perusahaan) => {
+            perusahaan = perusahaan || [];
+            return res.render('login', {
+                activeTab: 'mitra',
+                error: 'Semua field wajib diisi.',
+                perusahaan
+            });
+        });
+    }
+
+    // Cek PIN perusahaan
+    const query = 'SELECT * FROM perusahaan_mitra WHERE id = ? AND pin_perusahaan = ?';
+    db.query(query, [perusahaan_id, pin], (err, results) => {
         if (err) {
             console.error('Database Error:', err);
-            return res.status(500).render('login', { 
-                activeTab: 'mitra', 
-                error: 'Terjadi kesalahan pada server.' 
-            });
-        }
-        
-        if (results.length > 0) {
-            const pinData = results[0];
-            
-            if (pinData.is_used === 1) {
-                return res.render('login', { 
-                    activeTab: 'mitra', 
-                    error: 'Kode PIN sudah digunakan.' 
+            return db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err2, perusahaan) => {
+                perusahaan = perusahaan || [];
+                return res.status(500).render('login', {
+                    activeTab: 'mitra',
+                    error: 'Terjadi kesalahan pada server.',
+                    perusahaan
                 });
-            }
-            
-            res.redirect('/survey-kerjasama');
-        } else {
-            res.render('login', { 
-                activeTab: 'mitra', 
-                error: 'Kode PIN tidak valid.' 
             });
         }
+
+        if (results.length === 0) {
+            return db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err2, perusahaan) => {
+                perusahaan = perusahaan || [];
+                return res.render('login', {
+                    activeTab: 'mitra',
+                    error: 'PIN perusahaan tidak valid. Hubungi administrator.',
+                    perusahaan
+                });
+            });
+        }
+
+        // PIN valid — simpan log kunjungan karyawan
+        const perusahaanData = results[0];
+        const logQuery = `
+            INSERT INTO log_kunjungan_mitra (nama_karyawan, jabatan, perusahaan_id, waktu_login)
+            VALUES (?, ?, ?, NOW())
+        `;
+        db.query(logQuery, [nama, jabatan, perusahaan_id], (errLog) => {
+            if (errLog) {
+                // Log gagal tidak menghentikan login — hanya catat ke console
+                console.warn('Gagal menyimpan log kunjungan:', errLog.message);
+            }
+            // Redirect ke halaman survey
+            res.redirect('/survey-kerjasama');
+        });
     });
 };

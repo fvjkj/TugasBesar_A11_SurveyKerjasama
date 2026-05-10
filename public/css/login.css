@@ -451,10 +451,39 @@ body { font-family: var(--font); background: var(--right-bg); min-height: 100vh;
 }
 
 .field__hint {
-  text-align: center;
   font-size: 0.76rem;
   color: var(--txt-muted);
   line-height: 1.5;
+}
+
+/* Select / Dropdown */
+.field__wrap--select {
+  position: relative;
+}
+
+.field__select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem; /* room for chevron on right */
+}
+
+.field__select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+/* Right icon (chevron-down for select) */
+.field__icon--right {
+  position: absolute;
+  right: 0.85rem;
+  left: auto;
+  pointer-events: none;
+  color: var(--txt-muted);
+  width: 14px;
+  height: 14px;
 }
 
 /* ── Buttons ─────────────────────────────────────────────────── */

@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const authController = require('./controllers/authController');
+const db = require('./config/database');
 
 // 1. SETUP VIEW ENGINE & FOLDER PUBLIC
 app.set('view engine', 'ejs');
@@ -23,17 +24,18 @@ app.get('/', (req, res) => {
 
 // Rute Halaman Login
 app.get('/login', (req, res) => {
-    res.render('login', { activeTab: 'admin', error: null }); 
+    db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err, perusahaan) => {
+        if (err) { console.error('DB Error:', err); perusahaan = []; }
+        res.render('login', { activeTab: 'admin', error: null, perusahaan: perusahaan || [] });
+    });
 });
 
-// Rute untuk Input PIN Mitra (Tab Mitra di halaman Login)
-app.get('/input-pin', (req, res) => {
-    res.render('login', { activeTab: 'mitra', error: null }); 
-});
-
-// Rute Halaman Permintaan PIN Mitra (Fitur Baru Ferdi)
-app.get('/request-pin', (req, res) => {
-    res.render('request-pin', { error: null, success: null });
+// Rute untuk Login Mitra (Halaman terpisah)
+app.get('/login-mitra', (req, res) => {
+    db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err, perusahaan) => {
+        if (err) { console.error('DB Error:', err); perusahaan = []; }
+        res.render('login', { activeTab: 'mitra', error: null, perusahaan: perusahaan || [] });
+    });
 });
 
 // Halaman Setelah Login Mitra (Punya Madani)
