@@ -19,6 +19,9 @@ exports.postLoginAdmin = (req, res) => {
         }
         
         if (results.length > 0) {
+            // Set session admin
+            req.session.adminId = results[0].id;
+            req.session.adminName = results[0].nama;
             res.redirect('/');
         } else {
             res.render('login', { 
@@ -31,59 +34,69 @@ exports.postLoginAdmin = (req, res) => {
 
 // 2. Logika Validasi Login Mitra (PIN Perusahaan)
 exports.postLoginMitra = (req, res) => {
-    const { nama, jabatan, perusahaan_id, pin } = req.body;
+    const { pin } = req.body;
 
     // Validasi input dasar
-    if (!nama || !jabatan || !perusahaan_id || !pin) {
-        return db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err2, perusahaan) => {
-            perusahaan = perusahaan || [];
-            return res.render('login', {
-                activeTab: 'mitra',
-                error: 'Semua field wajib diisi.',
-                perusahaan
-            });
+    if (!pin) {
+        return res.render('login', {
+            activeTab: 'mitra',
+            error: 'PIN wajib diisi.'
         });
     }
 
     // Cek PIN perusahaan
-    const query = 'SELECT * FROM perusahaan_mitra WHERE id = ? AND pin_perusahaan = ?';
-    db.query(query, [perusahaan_id, pin], (err, results) => {
+    const query = 'SELECT * FROM perusahaan_mitra WHERE pin_perusahaan = ?';
+    db.query(query, [pin], (err, results) => {
         if (err) {
             console.error('Database Error:', err);
-            return db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err2, perusahaan) => {
-                perusahaan = perusahaan || [];
-                return res.status(500).render('login', {
-                    activeTab: 'mitra',
-                    error: 'Terjadi kesalahan pada server.',
-                    perusahaan
-                });
+            return res.status(500).render('login', {
+                activeTab: 'mitra',
+                error: 'Terjadi kesalahan pada server.'
             });
         }
 
         if (results.length === 0) {
-            return db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err2, perusahaan) => {
-                perusahaan = perusahaan || [];
-                return res.render('login', {
-                    activeTab: 'mitra',
-                    error: 'PIN perusahaan tidak valid. Hubungi administrator.',
-                    perusahaan
-                });
+            return res.render('login', {
+                activeTab: 'mitra',
+                error: 'PIN perusahaan tidak valid. Hubungi administrator.'
             });
         }
 
-        // PIN valid — simpan log kunjungan karyawan
         const perusahaanData = results[0];
-        const logQuery = `
-            INSERT INTO log_kunjungan_mitra (nama_karyawan, jabatan, perusahaan_id, waktu_login)
-            VALUES (?, ?, ?, NOW())
-        `;
-        db.query(logQuery, [nama, jabatan, perusahaan_id], (errLog) => {
-            if (errLog) {
-                // Log gagal tidak menghentikan login — hanya catat ke console
-                console.warn('Gagal menyimpan log kunjungan:', errLog.message);
+
+        if (perusahaanData.is_used) {
+            return res.render('login', {
+                activeTab: 'mitra',
+                error: 'PIN sudah digunakan. Satu perusahaan hanya dapat mengisi survey satu kali.'
+            });
+        }
+
+        // Tandai PIN sebagai digunakan
+        db.query('UPDATE perusahaan_mitra SET is_used = 1 WHERE id = ?', [perusahaanData.id], (errUpdate) => {
+            if (errUpdate) {
+                console.warn('Gagal mengupdate status is_used:', errUpdate.message);
             }
-            // Redirect ke halaman survey
-            res.redirect('/survey-kerjasama');
+
+            // PIN valid — simpan log kunjungan karyawan dengan nilai default
+            const nama = 'Perwakilan Mitra';
+            const jabatan = 'Perwakilan';
+            const logQuery = `
+                INSERT INTO log_kunjungan_mitra (nama_karyawan, jabatan, perusahaan_id, waktu_login)
+                VALUES (?, ?, ?, NOW())
+            `;
+            db.query(logQuery, [nama, jabatan, perusahaanData.id], (errLog) => {
+                if (errLog) {
+                    console.warn('Gagal menyimpan log kunjungan:', errLog.message);
+                }
+                
+                // Set session mitra
+                req.session.mitraId = perusahaanData.id;
+                req.session.mitraName = perusahaanData.nama_perusahaan;
+                req.session.employeeName = nama;
+                
+                // Redirect ke halaman survey
+                res.redirect('/survey-kerjasama');
+            });
         });
     });
 };

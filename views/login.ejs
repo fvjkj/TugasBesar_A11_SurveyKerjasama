@@ -32,7 +32,7 @@
 
       <div class="carousel" id="left-carousel" aria-label="Fitur SUKAFTI">
 
-        <% if (activeTab === 'admin') { %>
+        <% if (activeTab==='admin' ) { %>
           <!-- ================= CAROUSEL ADMIN ================= -->
           <div class="carousel__slide carousel__slide--active" data-index="0">
             <div class="panel-left__illus">
@@ -72,49 +72,52 @@
               </p>
             </div>
           </div>
-        <% } else { %>
-          <!-- ================= CAROUSEL MITRA ================= -->
-          <div class="carousel__slide carousel__slide--active" data-index="0">
-            <div class="panel-left__illus">
-              <img src="/image/survey_illustration.png" alt="Ilustrasi Mitra" class="illus-img" />
+          <% } else { %>
+            <!-- ================= CAROUSEL MITRA ================= -->
+            <div class="carousel__slide carousel__slide--active" data-index="0">
+              <div class="panel-left__illus">
+                <img src="/image/survey_illustration.png" alt="Ilustrasi Mitra" class="illus-img" />
+              </div>
+              <div class="panel-left__copy">
+                <h2 class="panel-left__tagline">Selamat Datang,<br />Mitra Industri FTI</h2>
+                <p class="panel-left__desc">
+                  Partisipasi Anda sangat berarti untuk meningkatkan kualitas lulusan dan layanan Fakultas Teknologi
+                  Informasi Universitas Andalas.
+                </p>
+              </div>
             </div>
-            <div class="panel-left__copy">
-              <h2 class="panel-left__tagline">Selamat Datang,<br />Mitra Industri FTI</h2>
-              <p class="panel-left__desc">
-                Partisipasi Anda sangat berarti untuk meningkatkan kualitas lulusan dan layanan Fakultas Teknologi Informasi Universitas Andalas.
-              </p>
-            </div>
-          </div>
 
-          <div class="carousel__slide" data-index="1">
-            <div class="panel-left__illus">
-              <img src="/image/survey_slide2.png" alt="Sinergi Akademik" class="illus-img" />
+            <div class="carousel__slide" data-index="1">
+              <div class="panel-left__illus">
+                <img src="/image/survey_slide2.png" alt="Sinergi Akademik" class="illus-img" />
+              </div>
+              <div class="panel-left__copy">
+                <h2 class="panel-left__tagline">Sinergi Akademik<br />&amp; Industri</h2>
+                <p class="panel-left__desc">
+                  Masukan Anda membantu kami menyelaraskan kurikulum dengan kebutuhan industri saat ini dan di masa
+                  depan.
+                </p>
+              </div>
             </div>
-            <div class="panel-left__copy">
-              <h2 class="panel-left__tagline">Sinergi Akademik<br />&amp; Industri</h2>
-              <p class="panel-left__desc">
-                Masukan Anda membantu kami menyelaraskan kurikulum dengan kebutuhan industri saat ini dan di masa depan.
-              </p>
-            </div>
-          </div>
 
-          <div class="carousel__slide" data-index="2">
-            <div class="panel-left__illus">
-              <img src="/image/survey_slide3.png" alt="Terima Kasih" class="illus-img" />
+            <div class="carousel__slide" data-index="2">
+              <div class="panel-left__illus">
+                <img src="/image/survey_slide3.png" alt="Terima Kasih" class="illus-img" />
+              </div>
+              <div class="panel-left__copy">
+                <h2 class="panel-left__tagline">Terima Kasih Atas<br />Kerjasama Anda</h2>
+                <p class="panel-left__desc">
+                  Kami sangat mengapresiasi waktu dan kontribusi berharga Anda dalam mengisi survey ini.
+                </p>
+              </div>
             </div>
-            <div class="panel-left__copy">
-              <h2 class="panel-left__tagline">Terima Kasih Atas<br />Kerjasama Anda</h2>
-              <p class="panel-left__desc">
-                Kami sangat mengapresiasi waktu dan kontribusi berharga Anda dalam mengisi survey ini.
-              </p>
-            </div>
-          </div>
-        <% } %>
+            <% } %>
 
       </div><!-- /.carousel -->
 
       <div class="panel-left__dots" role="tablist" aria-label="Slide">
-        <button class="dot dot--active" data-slide="0" onclick="goToSlide(0)" aria-label="Slide 1" aria-selected="true"></button>
+        <button class="dot dot--active" data-slide="0" onclick="goToSlide(0)" aria-label="Slide 1"
+          aria-selected="true"></button>
         <button class="dot" data-slide="1" onclick="goToSlide(1)" aria-label="Slide 2" aria-selected="false"></button>
         <button class="dot" data-slide="2" onclick="goToSlide(2)" aria-label="Slide 3" aria-selected="false"></button>
       </div>
@@ -129,152 +132,124 @@
         <div class="form-header">
           <h1 class="form-title">Masuk ke Sistem</h1>
           <p class="form-subtitle">
-            <% if (activeTab === 'admin') { %>
+            <% if (activeTab==='admin' ) { %>
               Login sebagai Administrator SUKAFTI
-            <% } else { %>
-              Login sebagai Mitra Industri FTI
-            <% } %>
+              <% } else { %>
+                Login sebagai Mitra Industri FTI
+                <% } %>
           </p>
         </div>
 
-        <% if (activeTab === 'admin') { %>
+        <% if (activeTab==='admin' ) { %>
           <!-- ── PANEL ADMIN ──────────────────── -->
           <section id="panel-admin" class="tab-panel">
 
-            <% if (locals.error && error && activeTab === 'admin') { %>
-            <div class="alert-error" role="alert">
-              <i data-lucide="alert-circle" class="alert-icon"></i>
-              <span><%= error %></span>
-            </div>
+            <% if (locals.error && error && activeTab==='admin' ) { %>
+              <div class="alert-error" role="alert">
+                <i data-lucide="alert-circle" class="alert-icon"></i>
+                <span>
+                  <%= error %>
+                </span>
+              </div>
+              <% } %>
+
+                <form action="/login" method="POST" class="login-form" novalidate>
+                  <div class="field">
+                    <label for="admin-email" class="field__label">Email</label>
+                    <div class="field__wrap">
+                      <i data-lucide="mail" class="field__icon"></i>
+                      <input type="email" id="admin-email" name="email" class="field__input"
+                        placeholder="admin@fti.unand.ac.id" autocomplete="email" required />
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="admin-password" class="field__label">Password</label>
+                    <div class="field__wrap">
+                      <i data-lucide="lock" class="field__icon"></i>
+                      <input type="password" id="admin-password" name="password" class="field__input"
+                        placeholder="Masukkan password" autocomplete="current-password" required />
+                      <button type="button" class="field__eye" onclick="togglePw('admin-password', this)"
+                        aria-label="Tampilkan password">
+                        <i data-lucide="eye"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button type="submit" id="btn-admin-login" class="btn btn--primary">
+                    <i data-lucide="log-in" class="btn__icon"></i>
+                    Masuk sebagai Admin
+                  </button>
+                </form>
+
+                <div class="divider"><span>atau</span></div>
+
+                <div class="alt-action">
+                  <span class="alt-action__text">Bukan Admin?</span>
+                  <a href="/login-mitra" class="btn btn--ghost-muted">
+                    <i data-lucide="building-2" class="btn__icon"></i>
+                    Masuk sebagai Mitra
+                  </a>
+                </div>
+          </section>
+          <% } else { %>
+            <!-- ── PANEL MITRA ──────────────────── -->
+            <section id="panel-mitra" class="tab-panel">
+
+              <% if (locals.error && error && activeTab==='mitra' ) { %>
+                <div class="alert-error" role="alert">
+                  <i data-lucide="alert-circle" class="alert-icon"></i>
+                  <span>
+                    <%= error %>
+                  </span>
+                </div>
+                <% } %>
+
+                  <p class="mitra-desc">
+                    Masukkan PIN perusahaan Anda untuk mengakses survey kerjasama.
+                  </p>
+
+                  <form action="/api/auth/mitra-login" method="POST" class="login-form" novalidate>
+
+                    <div class="field" style="align-items: center; margin-bottom: 1rem;">
+                      <label class="field__label field__label--center">PIN Perusahaan</label>
+                      <div class="pin-box-container">
+                        <input type="hidden" name="pin" id="mitra-pin-hidden" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" required />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
+                      </div>
+                      <p class="field__hint" style="text-align: center; margin-top: 0.75rem;">PIN (Maks 9 Karakter)
+                        diberikan oleh administrator SUKAFTI kepada perusahaan Anda.</p>
+                    </div>
+
+                    <button type="submit" id="btn-mitra-login" class="btn btn--secondary" style="margin-top: 0.5rem;">
+                      <i data-lucide="arrow-right-circle" class="btn__icon"></i>
+                      Masuk ke Sistem
+                    </button>
+                  </form>
+
+                  <div class="divider"><span>atau</span></div>
+
+                  <div class="alt-action">
+                    <span class="alt-action__text">Bukan Mitra?</span>
+                    <a href="/login" class="btn btn--ghost-muted">
+                      <i data-lucide="shield-check" class="btn__icon"></i>
+                      Masuk sebagai Admin
+                    </a>
+                  </div>
+            </section>
             <% } %>
 
-            <form action="/login" method="POST" class="login-form" novalidate>
-              <div class="field">
-                <label for="admin-email" class="field__label">Email</label>
-                <div class="field__wrap">
-                  <i data-lucide="mail" class="field__icon"></i>
-                  <input type="email" id="admin-email" name="email" class="field__input"
-                    placeholder="admin@fti.unand.ac.id" autocomplete="email" required />
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="admin-password" class="field__label">Password</label>
-                <div class="field__wrap">
-                  <i data-lucide="lock" class="field__icon"></i>
-                  <input type="password" id="admin-password" name="password" class="field__input"
-                    placeholder="Masukkan password" autocomplete="current-password" required />
-                  <button type="button" class="field__eye" onclick="togglePw('admin-password', this)"
-                    aria-label="Tampilkan password">
-                    <i data-lucide="eye"></i>
-                  </button>
-                </div>
-              </div>
-
-              <button type="submit" id="btn-admin-login" class="btn btn--primary">
-                <i data-lucide="log-in" class="btn__icon"></i>
-                Masuk sebagai Admin
-              </button>
-            </form>
-
-            <div class="divider"><span>atau</span></div>
-
-            <div class="alt-action">
-              <span class="alt-action__text">Bukan Admin?</span>
-              <a href="/login-mitra" class="btn btn--ghost-muted">
-                <i data-lucide="building-2" class="btn__icon"></i>
-                Masuk sebagai Mitra
-              </a>
-            </div>
-          </section>
-        <% } else { %>
-          <!-- ── PANEL MITRA ──────────────────── -->
-          <section id="panel-mitra" class="tab-panel">
-
-            <% if (locals.error && error && activeTab === 'mitra') { %>
-            <div class="alert-error" role="alert">
-              <i data-lucide="alert-circle" class="alert-icon"></i>
-              <span><%= error %></span>
-            </div>
-            <% } %>
-
-            <p class="mitra-desc">
-              Masukkan data diri dan PIN perusahaan Anda untuk mengakses survey kerjasama.
-            </p>
-
-            <form action="/api/auth/mitra-login" method="POST" class="login-form" novalidate>
-
-              <div class="field">
-                <label for="mitra-nama" class="field__label">Nama Lengkap</label>
-                <div class="field__wrap">
-                  <i data-lucide="user" class="field__icon"></i>
-                  <input type="text" id="mitra-nama" name="nama" class="field__input"
-                    placeholder="Masukkan nama lengkap" autocomplete="name" required />
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="mitra-jabatan" class="field__label">Jabatan</label>
-                <div class="field__wrap">
-                  <i data-lucide="briefcase" class="field__icon"></i>
-                  <input type="text" id="mitra-jabatan" name="jabatan" class="field__input"
-                    placeholder="Contoh: HRD Manager, Direktur, dll." required />
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="mitra-perusahaan" class="field__label">Perusahaan</label>
-                <div class="field__wrap field__wrap--select">
-                  <i data-lucide="building-2" class="field__icon"></i>
-                  <select id="mitra-perusahaan" name="perusahaan_id" class="field__input field__select" required>
-                    <option value="" disabled selected>-- Pilih perusahaan --</option>
-                    <% if (locals.perusahaan && perusahaan.length > 0) { %>
-                      <% perusahaan.forEach(function(p) { %>
-                        <option value="<%= p.id %>"><%= p.nama_perusahaan %></option>
-                      <% }); %>
-                    <% } else { %>
-                      <option value="" disabled>Belum ada perusahaan terdaftar</option>
-                    <% } %>
-                  </select>
-                  <i data-lucide="chevron-down" class="field__icon field__icon--right"></i>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="mitra-pin" class="field__label">PIN Perusahaan</label>
-                <div class="field__wrap">
-                  <i data-lucide="key-round" class="field__icon"></i>
-                  <input type="password" id="mitra-pin" name="pin" class="field__input"
-                    placeholder="Masukkan PIN perusahaan" maxlength="20" autocomplete="current-password" required />
-                  <button type="button" class="field__eye" onclick="togglePw('mitra-pin', this)"
-                    aria-label="Tampilkan PIN">
-                    <i data-lucide="eye"></i>
-                  </button>
-                </div>
-                <p class="field__hint">PIN diberikan oleh administrator SUKAFTI kepada perusahaan Anda.</p>
-              </div>
-
-              <button type="submit" id="btn-mitra-login" class="btn btn--secondary">
-                <i data-lucide="arrow-right-circle" class="btn__icon"></i>
-                Masuk ke Sistem
-              </button>
-            </form>
-
-            <div class="divider"><span>atau</span></div>
-
-            <div class="alt-action">
-              <span class="alt-action__text">Bukan Mitra?</span>
-              <a href="/login" class="btn btn--ghost-muted">
-                <i data-lucide="shield-check" class="btn__icon"></i>
-                Masuk sebagai Admin
-              </a>
-            </div>
-          </section>
-        <% } %>
-
-        <p class="form-footer">
-          &copy; <%= new Date().getFullYear() %> SUKAFTI &mdash; FTI Universitas Andalas
-        </p>
+              <p class="form-footer">
+                &copy; <%= new Date().getFullYear() %> SUKAFTI &mdash; FTI Universitas Andalas
+              </p>
 
       </div>
     </main>
@@ -286,11 +261,60 @@
 
     function togglePw(id, btn) {
       const inp = document.getElementById(id);
+      if (!inp) return;
       const ico = btn.querySelector('i[data-lucide]');
       const hidden = inp.type === 'password';
       inp.type = hidden ? 'text' : 'password';
       ico.setAttribute('data-lucide', hidden ? 'eye-off' : 'eye');
       lucide.createIcons();
+    }
+
+    // OTP PIN Logic
+    const pinBoxes = document.querySelectorAll('.pin-box');
+    const hiddenPinInput = document.getElementById('mitra-pin-hidden');
+
+    if (pinBoxes.length > 0) {
+      pinBoxes.forEach((box, index) => {
+        box.addEventListener('input', (e) => {
+          let val = e.target.value.toUpperCase();
+          e.target.value = val;
+          updateHiddenPin();
+
+          if (val && index < pinBoxes.length - 1) {
+            pinBoxes[index + 1].focus();
+          }
+        });
+
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            pinBoxes[index - 1].focus();
+            pinBoxes[index - 1].value = '';
+            updateHiddenPin();
+          }
+        });
+
+        box.addEventListener('paste', (e) => {
+          e.preventDefault();
+          let pasteData = (e.clipboardData || window.clipboardData).getData('text').toUpperCase().replace(/[^A-Z0-9]/g, '');
+          for (let i = 0; i < pasteData.length; i++) {
+            if (index + i < pinBoxes.length) {
+              pinBoxes[index + i].value = pasteData[i];
+            }
+          }
+          if (index + pasteData.length < pinBoxes.length) {
+            pinBoxes[index + pasteData.length].focus();
+          } else {
+            pinBoxes[pinBoxes.length - 1].focus();
+          }
+          updateHiddenPin();
+        });
+      });
+
+      function updateHiddenPin() {
+        let fullPin = '';
+        pinBoxes.forEach(b => fullPin += b.value);
+        hiddenPinInput.value = fullPin;
+      }
     }
 
     let currentSlide = 0;

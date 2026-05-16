@@ -45,7 +45,7 @@
     </ul>
 
     <div class="sidebar__footer">
-      <a href="/login" id="btn-logout"><i data-lucide="log-out"></i>Keluar</a>
+      <a href="/logout" id="btn-logout"><i data-lucide="log-out"></i>Keluar</a>
     </div>
   </aside>
 
@@ -222,86 +222,59 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar" style="background:#f1f5f9;color:#1e293b;">PM</div>
-                    <div><div class="company-name">PT Mencari Cinta</div><div class="company-id">#MITRA-001</div></div>
-                  </div>
-                </td>
-                <td><span class="pin-code">ABC123</span></td>
-                <td><span class="pill pill--active">Aktif</span></td>
-                <td>04 Mei 2026</td>
-                <td style="color:#94a3b8;">—</td>
-                <td><div class="action-group">
-                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
-                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar" style="background:#fefce8;color:#d97706;">CM</div>
-                    <div><div class="company-name">CV Maju Mundur</div><div class="company-id">#MITRA-002</div></div>
-                  </div>
-                </td>
-                <td><span class="pin-code">XYZ789</span></td>
-                <td><span class="pill pill--active">Aktif</span></td>
-                <td>04 Mei 2026</td>
-                <td style="color:#94a3b8;">—</td>
-                <td><div class="action-group">
-                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
-                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar" style="background:#ecfdf5;color:#059669;">TC</div>
-                    <div><div class="company-name">Tech Corp Indonesia</div><div class="company-id">#MITRA-003</div></div>
-                  </div>
-                </td>
-                <td><span class="pin-code pin-code--used">SUDAH1</span></td>
-                <td><span class="pill pill--used">Terpakai</span></td>
-                <td>03 Mei 2026</td>
-                <td>03 Mei 2026</td>
-                <td><div class="action-group">
-                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
-                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar" style="background:#fef9c3;color:#92400e;">GN</div>
-                    <div><div class="company-name">PT Garuda Nusantara</div><div class="company-id">#MITRA-004</div></div>
-                  </div>
-                </td>
-                <td><span class="pin-code">GRD042</span></td>
-                <td><span class="pill pill--pending">Menunggu</span></td>
-                <td>02 Mei 2026</td>
-                <td style="color:#94a3b8;">—</td>
-                <td><div class="action-group">
-                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
-                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar" style="background:#f0fdf4;color:#16a34a;">SI</div>
-                    <div><div class="company-name">Startup Inovasi Digital</div><div class="company-id">#MITRA-005</div></div>
-                  </div>
-                </td>
-                <td><span class="pin-code pin-code--used">SID991</span></td>
-                <td><span class="pill pill--used">Terpakai</span></td>
-                <td>01 Mei 2026</td>
-                <td>02 Mei 2026</td>
-                <td><div class="action-group">
-                  <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
-                  <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
-                </div></td>
-              </tr>
+              <% if (locals.perusahaan && perusahaan.length > 0) { %>
+                <% perusahaan.forEach(function(p) { 
+                     // Get initials for avatar (e.g., "PT Semen Padang" -> "PT")
+                     const avatarStr = p.nama_perusahaan.substring(0, 2).toUpperCase();
+                     
+                     // Format Date
+                     let formattedDate = "—";
+                     if (p.created_at) {
+                         const dateObj = new Date(p.created_at);
+                         const d = dateObj.getDate().toString().padStart(2, '0');
+                         const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                         const m = months[dateObj.getMonth()];
+                         const y = dateObj.getFullYear();
+                         formattedDate = `${d} ${m} ${y}`;
+                     }
+
+                     // Status Badge Logic
+                     let pillClass = 'pill--active';
+                     let pinClass = '';
+                     let statusText = p.status || 'aktif';
+                     
+                     if (statusText.toLowerCase() === 'nonaktif') {
+                         pillClass = 'pill--used';
+                         pinClass = 'pin-code--used';
+                     }
+                %>
+                <tr>
+                  <td>
+                    <div class="company-cell">
+                      <div class="company-avatar" style="background:#f1f5f9;color:#1e293b;"><%= avatarStr %></div>
+                      <div>
+                        <div class="company-name"><%= p.nama_perusahaan %></div>
+                        <div class="company-id">#MITRA-<%= p.id.toString().padStart(3, '0') %></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pin-code <%= pinClass %>"><%= p.pin_perusahaan %></span></td>
+                  <td><span class="pill <%= pillClass %>" style="text-transform: capitalize;"><%= statusText %></span></td>
+                  <td><%= formattedDate %></td>
+                  <td style="color:#94a3b8;">—</td>
+                  <td>
+                    <div class="action-group">
+                      <button class="action-btn" title="Edit"><i data-lucide="pencil"></i></button>
+                      <button class="action-btn action-btn--del" title="Hapus"><i data-lucide="trash-2"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" style="text-align:center; color:#94a3b8; padding:3rem;">Belum ada data PIN atau Perusahaan.</td>
+                </tr>
+              <% } %>
             </tbody>
           </table>
         </div>
