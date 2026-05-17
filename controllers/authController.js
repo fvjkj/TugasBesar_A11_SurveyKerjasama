@@ -64,15 +64,15 @@ exports.postLoginMitra = (req, res) => {
 
         const perusahaanData = results[0];
 
-        if (perusahaanData.is_used) {
+        if (perusahaanData.status === 'nonaktif') {
             return res.render('login', {
                 activeTab: 'mitra',
                 error: 'PIN sudah digunakan. Satu perusahaan hanya dapat mengisi survey satu kali.'
             });
         }
 
-        // Tandai PIN sebagai digunakan
-        db.query('UPDATE perusahaan_mitra SET is_used = 1 WHERE id = ?', [perusahaanData.id], (errUpdate) => {
+        // Tandai PIN sebagai digunakan (ubah status jadi nonaktif)
+        db.query('UPDATE perusahaan_mitra SET status = "nonaktif" WHERE id = ?', [perusahaanData.id], (errUpdate) => {
             if (errUpdate) {
                 console.warn('Gagal mengupdate status is_used:', errUpdate.message);
             }
