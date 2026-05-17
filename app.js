@@ -56,11 +56,6 @@ app.get('/login-mitra', (req, res) => {
     });
 });
 
-// Halaman Setelah Login Mitra (Punya Madani)
-app.get('/survey-kerjasama', isMitra, (req, res) => {
-    res.send(`<h1>Selamat Datang, Karyawan ${req.session.employeeName} dari ${req.session.mitraName}</h1><p>Halaman ini nantinya akan dikerjakan oleh anggota tim yang lain.</p><a href="/logout">Logout</a>`);
-});
-
 // Route Logout
 app.get('/logout', (req, res) => {
     const isMitra = req.session.mitraId;
@@ -79,6 +74,15 @@ app.post('/login', authController.postLoginAdmin);
 
 // Memproses form saat Mitra klik "Masuk" dengan PIN
 app.post('/api/auth/mitra-login', authController.postLoginMitra);
+
+// Halaman Survey Mitra Setelah Berhasil Login PIN
+app.get('/survey-kerjasama', isMitra, (req, res) => {
+
+    res.render('survey', {
+        mitraName: req.session.mitraName
+    });
+
+});
 
 // ==========================================
 // JALANKAN SERVER
