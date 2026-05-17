@@ -226,7 +226,9 @@
                         <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
                       </div>
                       <p class="field__hint" style="text-align: center; margin-top: 0.75rem;">PIN (Maks 9 Karakter)
-                        diberikan oleh administrator SUKAFTI kepada perusahaan Anda.</p>
+                        diberikan oleh administrator SUKAFTI kepada perusahaan Anda. 
+                        PIN hanya dapat digunakan satu kali untuk pengisian survey.</p>
+                      
                     </div>
 
                     <button type="submit" id="btn-mitra-login" class="btn btn--secondary" style="margin-top: 0.5rem;">
@@ -274,6 +276,7 @@
     const hiddenPinInput = document.getElementById('mitra-pin-hidden');
 
     if (pinBoxes.length > 0) {
+      pinBoxes[0].focus();
       pinBoxes.forEach((box, index) => {
         box.addEventListener('input', (e) => {
           let val = e.target.value.toUpperCase();
@@ -307,6 +310,9 @@
             pinBoxes[pinBoxes.length - 1].focus();
           }
           updateHiddenPin();
+          if (hiddenPinInput.value.length === 9) {
+            document.querySelector('#btn-mitra-login').focus();
+          }
         });
       });
 
