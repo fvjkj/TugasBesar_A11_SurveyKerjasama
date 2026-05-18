@@ -6,8 +6,8 @@ exports.isAdmin = (req, res, next) => {
     if (req.session && req.session.adminId) {
         return next();
     }
-    // Jika tidak ada, redirect ke form login admin
-    res.redirect('/login');
+    // Jika tidak ada, tampilkan halaman 401
+    res.status(401).render('errors/401');
 };
 
 // Middleware untuk membatasi akses khusus Mitra
@@ -16,6 +16,6 @@ exports.isMitra = (req, res, next) => {
     if (req.session && req.session.mitraId) {
         return next();
     }
-    // Jika tidak ada, redirect ke form login mitra
-    res.redirect('/login-mitra');
+    // Jika tidak ada, tampilkan halaman 401
+    res.status(401).render('errors/401');
 };

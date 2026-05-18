@@ -6,8 +6,14 @@ exports.postLoginAdmin = (req, res) => {
     // Mengambil data dari properti 'email' yang dikirimkan oleh form
     const { email, password } = req.body;
     
-    // Tetap cocokkan dengan kolom 'Identifier' di database
-    const query = 'SELECT * FROM users WHERE Identifier = ? AND password = ?';
+    // Cek identifier dan password, sekaligus join dengan RBAC tables
+    const query = `
+        SELECT u.*, r.name as role_name 
+        FROM users u 
+        JOIN model_has_roles mhr ON u.id = mhr.model_id AND mhr.model_type = 'User'
+        JOIN roles r ON mhr.role_id = r.id
+        WHERE u.Identifier = ? AND u.password = ? AND r.name = 'admin'
+    `;
     
     db.query(query, [email, password], (err, results) => {
         if (err) {
@@ -22,7 +28,7 @@ exports.postLoginAdmin = (req, res) => {
             // Set session admin
             req.session.adminId = results[0].id;
             req.session.adminName = results[0].nama;
-            res.redirect('/');
+            res.redirect('/dashboard');
         } else {
             res.render('login', { 
                 activeTab: 'admin', 

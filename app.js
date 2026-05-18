@@ -27,8 +27,13 @@ app.use(session({
 // ROUTING TAMPILAN HALAMAN (GET)
 // ==========================================
 
+// Halaman Root (Akan di-redirect ke Login)
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
 // Halaman Dashboard Utama (Admin)
-app.get('/', isAdmin, (req, res) => {
+app.get('/dashboard', isAdmin, (req, res) => {
     // Ambil 5 data mitra terbaru
     db.query('SELECT id, nama_perusahaan, pin_perusahaan, status, created_at FROM perusahaan_mitra ORDER BY created_at DESC LIMIT 5', (err, perusahaan) => {
         if (err) { console.error('DB Error:', err); perusahaan = []; }
@@ -39,7 +44,7 @@ app.get('/', isAdmin, (req, res) => {
 // Rute Halaman Login
 app.get('/login', (req, res) => {
     // Jika sudah login admin, langsung ke dashboard
-    if (req.session && req.session.adminId) return res.redirect('/');
+    if (req.session && req.session.adminId) return res.redirect('/dashboard');
     db.query('SELECT id, nama_perusahaan FROM perusahaan_mitra ORDER BY nama_perusahaan ASC', (err, perusahaan) => {
         if (err) { console.error('DB Error:', err); perusahaan = []; }
         res.render('login', { activeTab: 'admin', error: null, perusahaan: perusahaan || [] });
@@ -82,6 +87,21 @@ app.get('/survey-kerjasama', isMitra, (req, res) => {
         mitraName: req.session.mitraName
     });
 
+});
+
+// ==========================================
+// ERROR HANDLING (404 & 500)
+// ==========================================
+
+// 404 Not Found
+app.use((req, res, next) => {
+    res.status(404).render('errors/404');
+});
+
+// 500 Internal Server Error
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('errors/500');
 });
 
 // ==========================================
