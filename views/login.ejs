@@ -221,11 +221,8 @@
                         <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
                         <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
                         <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
-                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
-                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
-                        <input type="text" class="pin-box" maxlength="1" autocomplete="off" />
                       </div>
-                      <p class="field__hint" style="text-align: center; margin-top: 0.75rem;">PIN (Maks 9 Karakter)
+                      <p class="field__hint" style="text-align: center; margin-top: 0.75rem;">PIN (6 Karakter)
                         diberikan oleh administrator SUKAFTI kepada perusahaan Anda. 
                         PIN hanya dapat digunakan satu kali untuk pengisian survey.</p>
                       
@@ -310,7 +307,7 @@
             pinBoxes[pinBoxes.length - 1].focus();
           }
           updateHiddenPin();
-          if (hiddenPinInput.value.length === 9) {
+          if (hiddenPinInput.value.length === 6) {
             document.querySelector('#btn-mitra-login').focus();
           }
         });

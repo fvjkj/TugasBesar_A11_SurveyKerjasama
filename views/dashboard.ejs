@@ -101,7 +101,7 @@
           <div class="stat__icon icon-slate"><i data-lucide="building-2"></i></div>
           <div style="flex:1;">
             <div class="stat__label">Total Mitra</div>
-            <div class="stat__value">24</div>
+            <div class="stat__value" id="val-total-mitra">--</div>
             <div class="stat__trend stat__trend--up">
               <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
               +3 bulan ini
@@ -120,7 +120,7 @@
           <div class="stat__icon icon-amber"><i data-lucide="key-round"></i></div>
           <div style="flex:1;">
             <div class="stat__label">PIN Aktif</div>
-            <div class="stat__value">12</div>
+            <div class="stat__value" id="val-pin-aktif">--</div>
             <div class="stat__sub">Belum digunakan mitra</div>
             <div class="stat__bar-wrap">
               <div class="stat__bar-label"><span>Dari total PIN</span><span>12 / 18</span></div>
@@ -137,7 +137,7 @@
             <div class="stat__icon icon-emerald"><i data-lucide="check-circle-2"></i></div>
             <div>
               <div class="stat__label">Survey Selesai</div>
-              <div class="stat__value">18</div>
+              <div class="stat__value" id="val-survey-selesai">--</div>
               <div class="stat__trend stat__trend--up">
                 <i data-lucide="arrow-up-right" style="width:12px;height:12px;"></i>
                 75% completion rate
@@ -187,9 +187,9 @@
               <canvas id="chartPinDonut"></canvas>
             </div>
             <div class="donut-legend">
-              <div class="legend-item"><span class="legend-dot" style="background:#334155;"></span>Aktif (12)</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#94a3b8;"></span>Terpakai (6)</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#e2e8f0;"></span>Kadaluarsa (2)</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#334155;"></span>Aktif (<span id="l-aktif">0</span>)</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#94a3b8;"></span>Terpakai (<span id="l-terpakai">0</span>)</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#e2e8f0;"></span>Kadaluarsa (<span id="l-kadaluarsa">0</span>)</div>
             </div>
           </div>
         </div>
@@ -203,10 +203,14 @@
             <h2>Daftar PIN Survey &amp; Mitra</h2>
             <p>Menampilkan 5 data terbaru — <a href="/pin">Lihat semua →</a></p>
           </div>
-          <button class="btn-generate" id="btn-generate-pin" type="button">
-            <i data-lucide="plus-circle"></i>
-            Generate PIN Baru
-          </button>
+          <div style="display:flex; gap:10px;">
+            <a href="/admin/export-csv" class="btn" style="background-color: #10b981; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="download"></i> Export CSV
+            </a>
+            <button class="btn-generate" id="btn-generate-pin" type="button">
+              <i data-lucide="plus-circle"></i> Generate PIN Baru
+            </button>
+          </div>
         </div>
 
         <div style="overflow-x:auto;">
@@ -239,13 +243,23 @@
                      }
 
                      // Status Badge Logic
-                     let pillClass = 'pill--active';
+                     let pillClass = '';
                      let pinClass = '';
-                     let statusText = p.status || 'aktif';
+                     let statusText = p.status_pin || 'Belum Ada';
                      
-                     if (statusText.toLowerCase() === 'nonaktif') {
+                     if (statusText === 'used') {
                          pillClass = 'pill--used';
                          pinClass = 'pin-code--used';
+                         statusText = 'Terpakai';
+                     } else if (statusText === 'expired') {
+                         pillClass = 'pill--used'; // Using same visual for expired for now
+                         statusText = 'Kedaluwarsa';
+                     } else if (statusText === 'active') {
+                         pillClass = 'pill--active';
+                         statusText = 'Aktif';
+                     } else {
+                         // Belum Ada
+                         pillClass = 'pill--used'; // abu-abu
                      }
                 %>
                 <tr>
@@ -258,7 +272,7 @@
                       </div>
                     </div>
                   </td>
-                  <td><span class="pin-code <%= pinClass %>"><%= p.pin_perusahaan %></span></td>
+                  <td><span class="pin-code <%= pinClass %>"><%= p.pin_code || 'Belum Ada' %></span></td>
                   <td><span class="pill <%= pillClass %>" style="text-transform: capitalize;"><%= statusText %></span></td>
                   <td><%= formattedDate %></td>
                   <td style="color:#94a3b8;">—</td>
@@ -336,37 +350,170 @@
   });
 
   // ── Donut Chart: Status PIN ────────────────────────────
-  const ctxDonut = document.getElementById('chartPinDonut').getContext('2d');
-  new Chart(ctxDonut, {
-    type: 'doughnut',
-    data: {
-      labels: ['Aktif', 'Terpakai', 'Kadaluarsa'],
-      datasets: [{
-        data: [12, 6, 2],
-        backgroundColor: ['#334155', '#94a3b8', '#e2e8f0'],
-        borderWidth: 0,
-        hoverOffset: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      cutout: '72%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.label}: ${ctx.parsed} PIN`
+  let pinDonutChart = null;
+
+  function renderDonutChart(active, used, expired) {
+    const ctxDonut = document.getElementById('chartPinDonut').getContext('2d');
+    if (pinDonutChart) pinDonutChart.destroy();
+    pinDonutChart = new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: ['Aktif', 'Terpakai', 'Kadaluarsa'],
+        datasets: [{
+          data: [active, used, expired],
+          backgroundColor: ['#334155', '#94a3b8', '#e2e8f0'],
+          borderWidth: 0,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '72%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.label}: ${ctx.parsed} PIN`
+            }
           }
         }
       }
-    }
-  });
+    });
+
+    // Update legend DOM
+    document.getElementById('l-aktif').innerText = active;
+    document.getElementById('l-terpakai').innerText = used;
+    document.getElementById('l-kadaluarsa').innerText = expired;
+  }
+
+  // ── Fetch Dashboard API Stats ───────────────────────────
+  function fetchDashboardStats() {
+    fetch('/api/dashboard-stats')
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          const stats = data.data;
+          document.getElementById('val-total-mitra').innerText = stats.total_mitra || 0;
+          document.getElementById('val-pin-aktif').innerText = stats.total_pin_aktif || 0;
+          document.getElementById('val-survey-selesai').innerText = stats.total_respons || 0;
+          
+          if(stats.pin_stats) {
+            renderDonutChart(stats.pin_stats.active || 0, stats.pin_stats.used || 0, stats.pin_stats.expired || 0);
+          } else {
+            renderDonutChart(0,0,0);
+          }
+        }
+      })
+      .catch(err => console.error('Error fetching dashboard stats:', err));
+  }
+
+  // Panggil saat page diload
+  fetchDashboardStats();
 
   // ── Generate PIN placeholder ───────────────────────────
+  const pinDialogHTML = `
+    <style>
+      #pin-dialog::backdrop {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+      }
+      #pin-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        padding: 2.5rem;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        min-width: 400px;
+        background: #ffffff;
+      }
+      .dialog-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+      .dialog-header i {
+        color: #10b981;
+      }
+    </style>
+    <dialog id="pin-dialog">
+      <div class="dialog-header">
+        <i data-lucide="key-round"></i>
+        <h3 style="margin:0; font-size: 1.25rem; color: #0f172a;">Generate PIN Baru</h3>
+      </div>
+      <p style="color:#64748b; margin-bottom:1.5rem; font-size:0.875rem; line-height:1.5;">Pilih mitra industri untuk membuat akses PIN baru. Satu PIN hanya berlaku untuk 1 kali pengisian survey.</p>
+      <form id="form-generate-pin">
+        <label style="display:block; font-size:0.875rem; font-weight:500; color:#334155; margin-bottom:0.5rem;">Pilih Mitra Industri</label>
+        <select name="partner_id" style="width:100%; padding:0.75rem; margin-bottom:1.25rem; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; color:#0f172a; outline:none;" required>
+          <option value="" disabled selected>-- Silakan Pilih --</option>
+          <% if(locals.allPartners) { %>
+            <% allPartners.forEach(function(p) { %>
+              <option value="<%= p.id %>"><%= p.name %></option>
+            <% }) %>
+          <% } %>
+        </select>
+        <div id="pin-alert" style="color:#ef4444; font-size:0.875rem; margin-bottom:1rem; min-height: 1.25rem;"></div>
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" id="btn-close-dialog" class="btn btn--ghost-muted" style="border:1px solid #cbd5e1;">Batal</button>
+          <button type="submit" class="btn btn--primary" style="background:#0f172a; color:white; border:none; border-radius:6px; padding:0.5rem 1rem;">
+            Generate PIN
+          </button>
+        </div>
+      </form>
+    </dialog>
+  `;
+  document.body.insertAdjacentHTML('beforeend', pinDialogHTML);
+  lucide.createIcons(); // render icon di dalam dialog
+
+  const pinDialog = document.getElementById('pin-dialog');
+  const btnCloseDialog = document.getElementById('btn-close-dialog');
+  const formGeneratePin = document.getElementById('form-generate-pin');
+  const pinAlert = document.getElementById('pin-alert');
+
   document.getElementById('btn-generate-pin').addEventListener('click', () => {
-    alert('Fitur Generate PIN akan diimplementasikan di modul PIN! 🔑');
+    pinDialog.showModal();
+    pinAlert.innerText = '';
   });
+
+  btnCloseDialog.addEventListener('click', () => {
+    pinDialog.close();
+  });
+
+  formGeneratePin.addEventListener('submit', (e) => {
+    e.preventDefault();
+    pinAlert.innerText = '';
+    const partnerId = formGeneratePin.querySelector('select[name="partner_id"]').value;
+
+    fetch('/admin/generate-pin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partner_id: partnerId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.success) {
+        alert('PIN Berhasil dibuat: ' + data.pin_code);
+        pinDialog.close();
+        // Refresh page to see new pin
+        window.location.reload(); 
+      } else {
+        if (data.errors) {
+            pinAlert.innerText = data.errors.map(err => err.msg).join(', ');
+        } else {
+            pinAlert.innerText = data.message || 'Gagal generate PIN';
+        }
+      }
+    })
+    .catch(err => {
+      pinAlert.innerText = 'Terjadi kesalahan sistem.';
+    });
+  });
+
 </script>
 </body>
 </html>
